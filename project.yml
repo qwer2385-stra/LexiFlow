@@ -1,0 +1,85 @@
+name: LexiFlow
+options:
+  bundleIdPrefix: com.lexiflow
+  deploymentTarget:
+    iOS: "16.0"
+  xcodeVersion: "15.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+
+targets:
+  LexiFlow:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Configuration
+      - path: Extensions
+      - path: Models
+      - path: ViewModels
+      - path: Views
+      - path: Services
+      - path: Components
+      - path: Preview Content
+        optional: true
+    resources:
+      - path: Resources
+    settings:
+      base:
+        INFOPLIST_FILE: ""
+        PRODUCT_BUNDLE_IDENTIFIER: com.lexiflow.app
+        PRODUCT_NAME: LexiFlow
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: LexiFlow
+        INFOPLIST_KEY_CFBundleShortVersionString: "1.0.0"
+        INFOPLIST_KEY_CFBundleVersion: "1"
+        INFOPLIST_KEY_UILaunchStoryboardName: ""
+        INFOPLIST_KEY_UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UIBackgroundModes:
+          - remote-notification
+        INFOPLIST_KEY_NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: false
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: ""
+    preBuildScripts:
+      - name: "SwiftLint"
+        script: |
+          if which swiftlint > /dev/null; then
+            swiftlint
+          fi
+        basedOnDependencyAnalysis: false
+        inputFiles: []
+        outputFiles: []
+
+  LexiFlowTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: LexiFlowTests
+    dependencies:
+      - target: LexiFlow
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.lexiflow.app.tests
+        PRODUCT_NAME: LexiFlowTests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/LexiFlow.app/LexiFlow"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+
+schemes:
+  LexiFlow:
+    build:
+      targets:
+        LexiFlow: all
+        LexiFlowTests: [test]
+    test:
+      targets:
+        - LexiFlowTests
+    archive:
+      config: Release
