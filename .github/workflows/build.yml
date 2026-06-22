@@ -27,15 +27,24 @@ jobs:
       - name: Fix project format for Xcode 15.4
         run: |
           if [ -f "LexiFlow.xcodeproj/project.pbxproj" ]; then
-            # macOS sed 语法
-            sed -i '' 's/objectVersion = 77;/objectVersion = 74;/g' LexiFlow.xcodeproj/project.pbxproj
-            sed -i '' 's/compatibilityVersion = "Xcode 15.0"/compatibilityVersion = "Xcode 14.0"/g' LexiFlow.xcodeproj/project.pbxproj
-            echo "Project format downgraded for Xcode 15.4 compatibility"
-            grep -E "(objectVersion|compatibilityVersion)" LexiFlow.xcodeproj/project.pbxproj | head -5
+            # 查看原始值
+            echo "Before fix:"
+            grep -E "objectVersion|compatibilityVersion" LexiFlow.xcodeproj/project.pbxproj | head -3
+            
+            # 替换 objectVersion（匹配任意数字）
+            sed -i '' 's/objectVersion = [0-9][0-9]*/objectVersion = 54/g' LexiFlow.xcodeproj/project.pbxproj
+            
+            # 替换 compatibilityVersion
+            sed -i '' 's/compatibilityVersion = "Xcode [0-9][0-9.]*/compatibilityVersion = "Xcode 14.0/g' LexiFlow.xcodeproj/project.pbxproj
+            
+            # 验证修改
+            echo "After fix:"
+            grep -E "objectVersion|compatibilityVersion" LexiFlow.xcodeproj/project.pbxproj | head -3
           else
-            echo "WARNING: project.pbxproj not found"
-            ls -la LexiFlow.xcodeproj/ 2>/dev/null || echo "No xcodeproj directory"
+            echo "ERROR: project.pbxproj not found"
+            ls -la
           fi
+
 
 
       - name: Run unit tests
