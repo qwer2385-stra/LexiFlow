@@ -24,6 +24,17 @@ jobs:
 
       - name: Generate Xcode project
         run: xcodegen generate
+              - name: Fix project format for Xcode 15.4
+        run: |
+          # 手动降级项目文件格式
+          if [ -f "LexiFlow.xcodeproj/project.pbxproj" ]; then
+            sed -i.bak 's/objectVersion = 77;/objectVersion = attach_version=74;/g' LexiFlow.xcodeproj/project.pbxproj
+            sed -i 's/compatibilityVersion = "Xcode 15.0"/compatibilityVersion = "Xcode 14.0"/g' LexiFlow.xcodeproj/project.pbxproj
+            echo "✓ 项目格式已降级"
+          else
+            echo "⚠️ project.pbxproj 文件不存在"
+            ls -la LexiFlow.xcodeproj/
+          fi
 
       - name: Run unit tests
         run: |
