@@ -4,6 +4,8 @@ options:
   deploymentTarget:
     iOS: "16.0"
   xcodeVersion: "15.0"
+  lastUpgradeCheck: "1500"
+  lastSwiftUpdate: "1500"
 
 settings:
   base:
