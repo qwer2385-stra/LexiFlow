@@ -26,15 +26,17 @@ jobs:
         run: xcodegen generate
       - name: Fix project format for Xcode 15.4
         run: |
-     
           if [ -f "LexiFlow.xcodeproj/project.pbxproj" ]; then
-            sed -i.bak 's/objectVersion = 77;/objectVersion = attach_version=74;/g' LexiFlow.xcodeproj/project.pbxproj
-            sed -i 's/compatibilityVersion = "Xcode 15.0"/compatibilityVersion = "Xcode 14.0"/g' LexiFlow.xcodeproj/project.pbxproj
-            echo "✓ 项目格式已降级"
+            # macOS sed 语法
+            sed -i '' 's/objectVersion = 77;/objectVersion = 74;/g' LexiFlow.xcodeproj/project.pbxproj
+            sed -i '' 's/compatibilityVersion = "Xcode 15.0"/compatibilityVersion = "Xcode 14.0"/g' LexiFlow.xcodeproj/project.pbxproj
+            echo "Project format downgraded for Xcode 15.4 compatibility"
+            grep -E "(objectVersion|compatibilityVersion)" LexiFlow.xcodeproj/project.pbxproj | head -5
           else
-            echo "⚠️ project.pbxproj 文件不存在"
-            ls -la LexiFlow.xcodeproj/
+            echo "WARNING: project.pbxproj not found"
+            ls -la LexiFlow.xcodeproj/ 2>/dev/null || echo "No xcodeproj directory"
           fi
+
 
       - name: Run unit tests
         run: |
